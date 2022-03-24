@@ -11,7 +11,66 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.graphics import Rectangle,Color
 from kivy.config import Config
 from kivy.uix.widget import Widget
+from kivy.uix.checkbox import CheckBox
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.dropdown import DropDown
+from kivy.base import runTouchApp
 
+dropdown = DropDown()
+for index in range(10):
+
+    btn = Button(text='Value %d' %index, size_hint_y=None,height=40)
+    btn.bind(on_release = lambda btn:dropdown.select(btn.text))
+
+    dropdown.add_widget(btn)
+
+mainbutton = Button(text='Hello',size_hint = (None,None), pos=(350,300))
+mainbutton.bind(on_release = dropdown.open)
+
+dropdown.bind(on_select = lambda instance,x:setattr(mainbutton,'text',x))
+
+class check_box(GridLayout):
+
+
+
+    def __init__(self,**kwargs):
+
+        super(check_box,self).__init__(**kwargs)
+
+
+        self.cols = 2
+
+        self.add_widget(Label(text='Male'))
+        self.active =  CheckBox(active=True)
+        self.add_widget(self.active)
+
+        self.lbl_active = Label(text='Checkbox is on')
+        self.add_widget(self.lbl_active)
+
+        #attach a callback
+        self.active.bind(active=self.on_checkbox_Active)
+
+        #callback for the checkbox
+
+    def on_checkbox_Active(self,checkboxInstance,isActive):
+        if isActive:
+            self.lbl_active.text = 'checkbox is ON'
+            print("Checbox checked")
+
+        else:
+            self.lbl_active.text="checkbox is off"
+            print("checkbox unchecked")
+
+
+
+        self.add_widget(Label(text='Female'))
+        self.active = CheckBox(active=True)
+        self.add_widget(self.active)
+
+        self.add_widget(Label(text='Other'))
+        self.active = CheckBox(active=True)
+        self.add_widget(self.active)
 class TutorialApp(App):
 
     def build(self):
@@ -40,7 +99,6 @@ class TutorialApp(App):
         t.bind(text=l.setter('text'))
 
         return b
-
 class CanvasWidget(Widget):
 
     def __init__(self,**kwargs):
@@ -58,11 +116,11 @@ class CanvasWidget(Widget):
         self.rect.size = self.size
 class CanvasApp(App):
     def build(self):
-        return CanvasWidget()
+        return check_box()
 
 
 
-
+runTouchApp(mainbutton)
 
 
 CanvasApp().run()
